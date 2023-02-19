@@ -73,6 +73,7 @@ prev_playlist_type = -1
 # Write a string on first line and move to next line
 
 while 1:
+    start_time = time.time()
     # Read the heart rate 
     mx30.read_sensor()
     mx30.ir
@@ -99,6 +100,12 @@ while 1:
             lcd.write_string("Heartmonics")
             lcd.cursor_pos = (1,4)
             lcd.write_string ("<3 <3 <3" )
+        
+        end_time = time.time() 
+        if (end_time - start_time > 30):
+            print("timer")
+        
+    
     
     # Update led
     red.start(50/2.5)
