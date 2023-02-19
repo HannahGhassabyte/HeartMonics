@@ -3,6 +3,8 @@ import max30100
 import signal
 import sys
 import RPi.GPIO as GPIO
+from RPLCD import i2c
+from time import sleep
 
 BUTTON_GPIO = 17
 BLUE_GPIO = 10 
@@ -10,6 +12,19 @@ GREEN_GPIO = 9
 RED_GPIO = 11
 LED_HZ = 75
 LED_CURRENT_IR = 7.6
+
+# constants to initialise the LCD
+lcdmode = 'i2c'
+cols = 20
+rows = 4
+charmap = 'A00'
+i2c_expander = 'PCF8574'
+
+# Generally 27 is the address;Find yours using: i2cdetect -y 1 
+address = 0x27 
+port = 1 # 0 on an older Raspberry Pi
+
+
 
 # IRQ
 def button_pressed_callback(GPIO_pin_interrupted):
@@ -30,6 +45,7 @@ def bpm_average(mx30):
 # Intialze perpherials
 mx30 = max30100.MAX30100(led_current_ir = LED_CURRENT_IR)
 mx30.enable_spo2()
+lcd = i2c.CharLCD(i2c_expander, address, port=port, charmap=charmap, cols=cols, rows=rows)
 
 # button setup
 GPIO.setmode (GPIO.BCM)
@@ -48,6 +64,20 @@ red = GPIO.PWM(RED_GPIO, LED_HZ)
 
 # Enable Interrupts
 GPIO.add_event_detect(BUTTON_GPIO, GPIO.RISING, callback=button_pressed_callback, bouncetime=200)
+
+
+# Write a string on first line and move to next line
+lcd.write_string('Hello world')
+lcd.crlf()
+lcd.write_string('IoT with Vincy')
+lcd.crlf()
+lcd.write_string('Phppot')
+sleep(5)
+# Switch off backlight
+lcd.backlight_enabled = False 
+# Clear the LCD screen
+lcd.close(clear=True)
+
 
 while 1:
     
