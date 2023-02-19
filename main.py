@@ -9,7 +9,6 @@ BLUE_GPIO = 10
 GREEN_GPIO = 9 
 RED_GPIO = 11
 LED_HZ = 75
-
 LED_CURRENT_IR = 7.6
 
 # IRQ
@@ -32,9 +31,9 @@ GPIO.setup(GREEN_GPIO, GPIO.OUT)
 GPIO.setup(RED_GPIO, GPIO.OUT)
 
 # create objects from pwm 
-blue = GPIO.PWN(BLUE_GPIO, LED_HZ)
-green = GPIO.PWN(GREEN_GPIO, LED_HZ)
-red = GPIO(RED_GPIO, LED_HZ)
+blue = GPIO.PWM(BLUE_GPIO, LED_HZ)
+green = GPIO.PWM(GREEN_GPIO, LED_HZ)
+red = GPIO.PWM(RED_GPIO, LED_HZ)
 
 # Enable Interrupts
 GPIO.add_event_detect(BUTTON_GPIO, GPIO.RISING, callback=button_pressed_callback, bouncetime=200)
@@ -49,7 +48,9 @@ while 1:
         print("Pulse:", hb)
     
     # Update led
-    red.start(255/2.5)
-     
+    red.start(50/2.5)
+    blue.start(100/2.5)
+    green.start(1/2.5)
     
+     
     time.sleep(1)
