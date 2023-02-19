@@ -34,11 +34,11 @@ def button_pressed_callback(GPIO_pin_interrupted):
 def bpm_average(mx30):
     bpm_buffer = mx30.buffer_ir; 
     # Make sure buffer isn't null 
-    if len(bpm_buffer)>0:
+    if len(bpm_buffer)>3:
         sum = 0
-        for i in range(0, len(bpm_buffer)):
-            sum = sum + bpm_buffer[i] 
-        return average = sum/len(bpm_buffer)
+        for i in range(1, 5):
+            sum = sum + bpm_buffer[-i] 
+        return (sum/(400))
     return None
 
 
