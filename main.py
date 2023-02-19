@@ -28,7 +28,10 @@ lcd.cursor_pos = (0, 5)
 # IRQ
 def button_pressed_callback(GPIO_pin_interrupted):
     print("Button pressed")
-    toggle_play(sp)
+    #toggle_play(sp)
+    change_playback_device(sp)
+    print("Device changed")
+
 
 # Take average BPM form FIFO buffer
 def bpm_average(mx30):
@@ -78,10 +81,12 @@ while 1:
         print("Pulse:", hb)
         bpm_avg = bpm_average(mx30)
         print("Average", bpm_avg)
+        # Extend logic to spotify.py
         song_name, prev_playlist_type = hr_logic(HR_VALUE=bpm_avg, sp=sp, prev_playlist_type=prev_playlist_type, 
                                                 playlist_slow=playlist_slow, 
                                                 playlist_med=playlist_med, 
                                                 playlist_fast=playlist_fast)
+        # LCD display
         if bpm_avg > 50:
             lcd.cursor_pos = (0, 0)
             string_write = "Heart Rate:" + str(math.trunc(bpm_avg))
@@ -94,9 +99,6 @@ while 1:
             lcd.write_string("Heartmonics")
             lcd.cursor_pos = (1,4)
             lcd.write_string ("<3 <3 <3" )
-    
-        
-    
     
     # Update led
     red.start(50/2.5)
