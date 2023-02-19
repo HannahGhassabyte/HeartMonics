@@ -20,6 +20,7 @@ def spotify_init():
                                                     redirect_uri="http://localhost:8080",
                                                     scope="user-read-playback-state,user-modify-playback-state"))
     sp.shuffle(True, device_id=DEVICE_ID) # Shuffle on
+    sp.transfer_playback(device_id=DEVICE_ID, force_play=False)
 
     # Pre-process saved playlists
     playlist_slow = []
