@@ -78,7 +78,7 @@ while 1:
         print("Pulse:", hb)
         bpm_avg = bpm_average(mx30)
         print("Average", bpm_avg)
-        song_name = hr_logic(HR_VALUE=bpm_avg, sp=sp, prev_playlist_type=prev_playlist_type, 
+        song_name, prev_playlist_type = hr_logic(HR_VALUE=bpm_avg, sp=sp, prev_playlist_type=prev_playlist_type, 
                                                 playlist_slow=playlist_slow, 
                                                 playlist_med=playlist_med, 
                                                 playlist_fast=playlist_fast)
