@@ -104,8 +104,6 @@ while 1:
         end_time = time.time() 
         if (end_time - start_time > 30):
             print("timer")
-        
-    
     
     # Update led
     red.start(50/2.5)

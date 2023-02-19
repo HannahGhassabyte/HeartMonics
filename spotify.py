@@ -63,21 +63,21 @@ def hr_logic(HR_VALUE, sp, prev_playlist_type, playlist_slow, playlist_med, play
     playlist_uri_med = 'spotify:playlist:2s6Y2vhOXPdbx9emkNab3k'
     playlist_uri_fast = 'spotify:playlist:4Hi8QTO8mimKyPq4qrBjiZ'
 
-    if (HR_VALUE < 30 or HR_VALUE > 180) and (prev_playlist_type != ALARM):
+    if (HR_VALUE <= 50 or HR_VALUE > 150) and (prev_playlist_type != ALARM):
         sp.start_playback(device_id=DEVICE_ID, context_uri=playlist_uri_alarm, offset={"position":0})
         next_playlist_type = 0
         song_name = "Alarm"
-    elif HR_VALUE >= 30 and HR_VALUE <= 60 and (prev_playlist_type != SLOW):
+    elif HR_VALUE > 50 and HR_VALUE <= 85 and (prev_playlist_type != SLOW):
         slow_song_position = random.randint(0,len(playlist_slow))
         fade_play(sp, playlist_uri_slow, slow_song_position)
         song_name = playlist_slow[slow_song_position]['name']
         next_playlist_type = 1
-    elif HR_VALUE > 60 and HR_VALUE <=100 and (prev_playlist_type != MEDIUM):
+    elif HR_VALUE > 85 and HR_VALUE <=100 and (prev_playlist_type != MEDIUM):
         med_song_position = random.randint(0,len(playlist_med))
         fade_play(sp, playlist_uri_med, med_song_position)
         song_name = playlist_med[med_song_position]['name']
         next_playlist_type = 2
-    elif HR_VALUE > 100 and HR_VALUE < 150 and (prev_playlist_type != FAST):
+    elif HR_VALUE > 100 and HR_VALUE <= 150 and (prev_playlist_type != FAST):
         fast_song_position = random.randint(0,len(playlist_fast))
         fade_play(sp, playlist_uri_fast, fast_song_position)
         song_name = playlist_fast[fast_song_position]['name']
@@ -133,5 +133,4 @@ def change_playback_device(sp):
         DEVICE_ID = id_2
     else:
         DEVICE_ID = id_1
-    
-    sp.transfer_playback(device_id=DEVICE_ID, force_play=False)
+    sp.transfer_playback(device_id=DEVICE_ID, force_play=True)
