@@ -19,8 +19,9 @@ def spotify_init():
                                                     client_secret=CLIENT_SECRET,
                                                     redirect_uri="http://localhost:8080",
                                                     scope="user-read-playback-state,user-modify-playback-state"))
-    sp.shuffle(True, device_id=DEVICE_ID)
+    sp.shuffle(True, device_id=DEVICE_ID) # Shuffle on
 
+    # Pre-process saved playlists
     playlist_slow = []
     results = sp.playlist_items(playlist_id='0vvXsWCC9xrXsKd4FyS8kM')
     for i, track in enumerate(results['items']):
@@ -54,13 +55,14 @@ def spotify_init():
     return sp, playlist_slow, playlist_med, playlist_fast
 
 def hr_logic(HR_VALUE, sp, prev_playlist_type, playlist_slow, playlist_med, playlist_fast):
-    # check HR and assign to a playlist 
+    # Check HR and assign to a playlist catagory or alarm
     song_name = None
     next_playlist_type = prev_playlist_type
     playlist_uri_alarm = 'spotify:playlist:1Li4fkCNTZGzX5fXuAO9kU'
     playlist_uri_slow = 'spotify:playlist:0vvXsWCC9xrXsKd4FyS8kM'
     playlist_uri_med = 'spotify:playlist:2s6Y2vhOXPdbx9emkNab3k'
     playlist_uri_fast = 'spotify:playlist:4Hi8QTO8mimKyPq4qrBjiZ'
+
     if (HR_VALUE < 30 or HR_VALUE > 180) and (prev_playlist_type != ALARM):
         sp.start_playback(device_id=DEVICE_ID, context_uri=playlist_uri_alarm, offset={"position":0})
         next_playlist_type = 0
@@ -80,9 +82,11 @@ def hr_logic(HR_VALUE, sp, prev_playlist_type, playlist_slow, playlist_med, play
         fade_play(sp, playlist_uri_fast, fast_song_position)
         song_name = playlist_fast[fast_song_position]['name']
         next_playlist_type = 3
+
     return song_name, next_playlist_type
 
 def fade_play(sp, uris_in, offset_in):
+    # Regulates song transitions
     results = sp.currently_playing()
     is_playing = results['is_playing']
     if is_playing:
@@ -104,12 +108,11 @@ def fade_play(sp, uris_in, offset_in):
         sp.start_playback(device_id=DEVICE_ID, context_uri=uris_in, offset={"position":offset_in})
 
 def toggle_play(sp):
-    # parsing 
+    # check if already playing and toggle
     sp.volume(100)
     results = sp.currently_playing()
     is_playing = results['is_playing']
     if is_playing:
-        # toggle
         sp.pause_playback(device_id=DEVICE_ID)
     else: 
         sp.start_playback(device_id=DEVICE_ID)
@@ -120,13 +123,15 @@ def skip(sp):
 def previous(sp):
     sp.previous_track(device_id=DEVICE_ID)
 
-
-#main
-'''sp, playlist_slow, playlist_med, playlist_fast = spotify_init()
-hr_logic(50, sp, -1, playlist_slow, playlist_med, playlist_fast)
-sleep(5)
-skip(sp)
-sleep(5)
-previous(sp)
-sleep(5)
-toggle_play(sp)'''
+def change_playback_device(sp):
+    # Play music on next available connected device
+    global DEVICE_ID
+    id_1 = '9406b4de41523bd2e8c232cf4e588df16b71333f'
+    id_2 = 'af930ba11ebd8812d3d9e525628764705ff17d1a'
+    
+    if DEVICE_ID == id_1:
+        DEVICE_ID = id_2
+    else:
+        DEVICE_ID = id_1
+    
+    sp.transfer_playback(device_id=DEVICE_ID, force_play=False)
