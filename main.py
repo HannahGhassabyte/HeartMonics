@@ -15,6 +15,16 @@ LED_CURRENT_IR = 7.6
 def button_pressed_callback(GPIO_pin_interrupted):
     print("Button pressed")
 
+# Take average BPM form FIFO buffer
+def bpm_average(mx30):
+    bpm_buffer = mx30.buffer_ir; 
+    sum = 0
+    
+    for i in bpm_buffer: 
+        sum = sum + bpm_buffer[i]
+    
+    average = sum/len(bpm_buffer)
+
 
 # Intialze perpherials
 mx30 = max30100.MAX30100(led_current_ir = LED_CURRENT_IR)
