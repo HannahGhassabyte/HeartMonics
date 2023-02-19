@@ -88,14 +88,14 @@ def fade_play(sp, uris_in, offset_in):
         volume = 100
         for i in range(0, 10000):
             if(i%5 == 0):
-                volume -= 2
+                volume -= 5
                 sp.volume(volume)
             if(volume <= 0):
                 break
         sp.start_playback(device_id=DEVICE_ID, context_uri=uris_in, offset={"position":offset_in})
         for i in range(0, 10000):
             if(i%5 == 0):
-                volume += 2
+                volume += 5
                 sp.volume(volume)
             if(volume >= 100):
                 break
