@@ -56,12 +56,12 @@ def spotify_init():
 def hr_logic(HR_VALUE, sp, prev_playlist_type, playlist_slow, playlist_med, playlist_fast):
     # check HR and assign to a playlist 
     song_name = None
-
+    playlist_uri_alarm = 'spotify:playlist:1Li4fkCNTZGzX5fXuAO9kU'
     playlist_uri_slow = 'spotify:playlist:0vvXsWCC9xrXsKd4FyS8kM'
     playlist_uri_med = 'spotify:playlist:2s6Y2vhOXPdbx9emkNab3k'
     playlist_uri_fast = 'spotify:playlist:4Hi8QTO8mimKyPq4qrBjiZ'
     if (HR_VALUE < 30 or HR_VALUE > 180) and (prev_playlist_type != ALARM):
-        sp.start_playback(device_id=DEVICE_ID, uris=['spotify:track:50zmksABE8YDsFHcRcuqVe'])
+        sp.start_playback(device_id=DEVICE_ID, context_uri=playlist_uri_alarm, offset={"position":0})
         prev_playlist_type = 0
         song_name = "Alarm"
     elif HR_VALUE >= 30 and HR_VALUE <= 60 and (prev_playlist_type != SLOW):
