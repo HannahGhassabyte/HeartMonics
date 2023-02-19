@@ -103,5 +103,3 @@ while 1:
     blue.start(100/2.5)
     green.start(1/2.5)
     
-     
-    time.sleep(1)
