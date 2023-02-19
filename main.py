@@ -6,6 +6,7 @@ import RPi.GPIO as GPIO
 from RPLCD import i2c
 from time import sleep
 import math
+from spotify import *
 
 BUTTON_GPIO = 17
 BLUE_GPIO = 10 
@@ -27,6 +28,7 @@ lcd.cursor_pos = (0, 5)
 # IRQ
 def button_pressed_callback(GPIO_pin_interrupted):
     print("Button pressed")
+    toggle_play(sp)
 
 # Take average BPM form FIFO buffer
 def bpm_average(mx30):
@@ -62,9 +64,10 @@ red = GPIO.PWM(RED_GPIO, LED_HZ)
 # Enable Interrupts
 GPIO.add_event_detect(BUTTON_GPIO, GPIO.RISING, callback=button_pressed_callback, bouncetime=200)
 
-
+# Spotify Initializations
+sp, playlist_slow, playlist_med, playlist_fast = spotify_init()
+prev_playlist_type = -1
 # Write a string on first line and move to next line
-
 
 while 1:
     # Read the heart rate 
@@ -75,9 +78,16 @@ while 1:
         print("Pulse:", hb)
         bpm_avg = bpm_average(mx30)
         print("Average", bpm_avg)
+        song_name = hr_logic(HR_VALUE=bpm_avg, sp=sp, prev_playlist_type=prev_playlist_type, 
+                                                playlist_slow=playlist_slow, 
+                                                playlist_med=playlist_med, 
+                                                playlist_fast=playlist_fast)
         if bpm_avg > 50:
             lcd.cursor_pos = (0, 0)
             string_write = "Heart Rate:" + str(math.trunc(bpm_avg))
+            lcd.write_string (string_write)
+            lcd.cursor_pos = (1, 0)
+            string_write = "Song:" + str(song_name)
             lcd.write_string (string_write)
         else:
             lcd.cursor_pos=(0,2)

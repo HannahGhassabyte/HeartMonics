@@ -55,21 +55,31 @@ def spotify_init():
 
 def hr_logic(HR_VALUE, sp, prev_playlist_type, playlist_slow, playlist_med, playlist_fast):
     # check HR and assign to a playlist 
+    song_name = None
+
     playlist_uri_slow = 'spotify:playlist:0vvXsWCC9xrXsKd4FyS8kM'
     playlist_uri_med = 'spotify:playlist:2s6Y2vhOXPdbx9emkNab3k'
     playlist_uri_fast = 'spotify:playlist:4Hi8QTO8mimKyPq4qrBjiZ'
     if (HR_VALUE < 30 or HR_VALUE > 180) and (prev_playlist_type != ALARM):
         sp.start_playback(device_id=DEVICE_ID, uris=['spotify:track:50zmksABE8YDsFHcRcuqVe'])
         prev_playlist_type = 0
+        song_name = "Alarm"
     elif HR_VALUE >= 30 and HR_VALUE <= 60 and (prev_playlist_type != SLOW):
-        fade_play(sp, playlist_uri_slow, random.randint(0,len(playlist_slow)))
+        slow_song_position = random.randint(0,len(playlist_slow))
+        fade_play(sp, playlist_uri_slow, slow_song_position)
+        song_name = playlist_slow[slow_song_position]['name']
         prev_playlist_type = 1
     elif HR_VALUE > 60 and HR_VALUE <=100 and (prev_playlist_type != MEDIUM):
-        fade_play(sp, playlist_uri_med, random.randint(0,len(playlist_med)))
+        med_song_position = random.randint(0,len(playlist_med))
+        fade_play(sp, playlist_uri_med, med_song_position)
+        song_name = playlist_med[med_song_position]['name']
         prev_playlist_type = 2
     elif HR_VALUE > 100 and HR_VALUE < 150 and (prev_playlist_type != FAST):
-        fade_play(sp, playlist_uri_fast, random.randint(0,len(playlist_fast)))
+        fast_song_position = random.randint(0,len(playlist_fast))
+        fade_play(sp, playlist_uri_fast, fast_song_position)
+        song_name = playlist_fast[fast_song_position]['name']
         prev_playlist_type = 3
+    return song_name
 
 def fade_play(sp, uris_in, offset_in):
     results = sp.currently_playing()
@@ -109,12 +119,13 @@ def skip(sp):
 def previous(sp):
     sp.previous_track(device_id=DEVICE_ID)
 
+
 #main
-sp, playlist_slow, playlist_med, playlist_fast = spotify_init()
-hr_logic(130, sp, -1, playlist_slow, playlist_med, playlist_fast)
-sleep(10)
+'''sp, playlist_slow, playlist_med, playlist_fast = spotify_init()
+hr_logic(50, sp, -1, playlist_slow, playlist_med, playlist_fast)
+sleep(5)
 skip(sp)
 sleep(5)
 previous(sp)
 sleep(5)
-toggle_play(sp)
+toggle_play(sp)'''
