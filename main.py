@@ -18,12 +18,12 @@ def button_pressed_callback(GPIO_pin_interrupted):
 # Take average BPM form FIFO buffer
 def bpm_average(mx30):
     bpm_buffer = mx30.buffer_ir; 
-    sum = 0
-    
-    for i in bpm_buffer: 
-        sum = sum + bpm_buffer[i]
-    
-    average = sum/len(bpm_buffer)
+    # Make sure buffer isn't null 
+    if bpm_buffer:
+        sum = 0
+        for i in bpm_buffer: 
+            sum = sum + bpm_buffer[i] 
+        average = sum/len(bpm_buffer)
 
 
 # Intialze perpherials
@@ -56,6 +56,8 @@ while 1:
     hb = int(mx30.ir / 100 )
     if mx30.ir != mx30.buffer_ir :
         print("Pulse:", hb)
+        bpm_avg = bpm_average(mx30)
+        print("Average", bpm_avg)
     
     # Update led
     red.start(50/2.5)
