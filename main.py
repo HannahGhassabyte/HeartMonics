@@ -23,7 +23,8 @@ def bpm_average(mx30):
         sum = 0
         for i in range(0, len(bpm_buffer)):
             sum = sum + bpm_buffer[i] 
-        average = sum/len(bpm_buffer)
+        return average = sum/len(bpm_buffer)
+    return None
 
 
 # Intialze perpherials
