@@ -5,6 +5,7 @@ import sys
 import RPi.GPIO as GPIO
 from RPLCD import i2c
 from time import sleep
+import math
 
 BUTTON_GPIO = 17
 BLUE_GPIO = 10 
@@ -15,15 +16,12 @@ LED_CURRENT_IR = 7.6
 
 # constants to initialise the LCD
 lcdmode = 'i2c'
-cols = 20
-rows = 4
-charmap = 'A00'
+cols = 16
 i2c_expander = 'PCF8574'
-
-# Generally 27 is the address;Find yours using: i2cdetect -y 1 
-address = 0x27 
-port = 1 # 0 on an older Raspberry Pi
-
+address = 0x27
+backlight = False 
+lcd = i2c.CharLCD(i2c_expander, address, backlight)
+lcd.cursor_pos = (0, 5)
 
 
 # IRQ
@@ -39,13 +37,12 @@ def bpm_average(mx30):
         for i in range(1, 5):
             sum = sum + bpm_buffer[-i] 
         return (sum/(400))
-    return None
+    return 0
 
 
 # Intialze perpherials
 mx30 = max30100.MAX30100(led_current_ir = LED_CURRENT_IR)
 mx30.enable_spo2()
-lcd = i2c.CharLCD(i2c_expander, address, port=port, charmap=charmap, cols=cols, rows=rows)
 
 # button setup
 GPIO.setmode (GPIO.BCM)
@@ -67,20 +64,9 @@ GPIO.add_event_detect(BUTTON_GPIO, GPIO.RISING, callback=button_pressed_callback
 
 
 # Write a string on first line and move to next line
-lcd.write_string('Hello world')
-lcd.crlf()
-lcd.write_string('IoT with Vincy')
-lcd.crlf()
-lcd.write_string('Phppot')
-sleep(5)
-# Switch off backlight
-lcd.backlight_enabled = False 
-# Clear the LCD screen
-lcd.close(clear=True)
 
 
 while 1:
-    
     # Read the heart rate 
     mx30.read_sensor()
     mx30.ir
@@ -89,6 +75,18 @@ while 1:
         print("Pulse:", hb)
         bpm_avg = bpm_average(mx30)
         print("Average", bpm_avg)
+        if bpm_avg > 50:
+            lcd.cursor_pos = (0, 0)
+            string_write = "Heart Rate:" + str(math.trunc(bpm_avg))
+            lcd.write_string (string_write)
+        else:
+            lcd.cursor_pos=(0,2)
+            lcd.write_string("Heartmonics")
+            lcd.cursor_pos = (1,4)
+            lcd.write_string ("<3 <3 <3" )
+    
+        
+    
     
     # Update led
     red.start(50/2.5)
