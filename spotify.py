@@ -3,9 +3,9 @@ from spotipy.oauth2 import SpotifyOAuth
 from time import sleep
 import random
 
-DEVICE_ID="9406b4de41523bd2e8c232cf4e588df16b71333f"
-CLIENT_ID="365ff2fe8b054874aa2bcb01926a134b"
-CLIENT_SECRET="b5e702306c004495b5cb663da1296973"
+DEVICE_ID="EDIT HERE"
+CLIENT_ID="EDIT HERE"
+CLIENT_SECRET="EDIT HERE"
 
 ALARM = 0
 SLOW = 1
@@ -127,8 +127,8 @@ def previous(sp):
 def change_playback_device(sp):
     # Play music on next available connected device
     global DEVICE_ID
-    id_1 = '9406b4de41523bd2e8c232cf4e588df16b71333f'
-    id_2 = 'af930ba11ebd8812d3d9e525628764705ff17d1a'
+    id_1 = 'EDIT HERE'
+    id_2 = 'EDIT HERE'
     
     if DEVICE_ID == id_1:
         DEVICE_ID = id_2
